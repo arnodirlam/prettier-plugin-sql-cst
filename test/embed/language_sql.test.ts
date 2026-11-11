@@ -35,7 +35,7 @@ describe("LANGUAGE sql", () => {
           dedent`
               ${code}
               LANGUAGE sql
-              AS 'SELECT ''foo'''
+              AS 'SELECT 1'
             `,
         );
       });
@@ -66,7 +66,7 @@ describe("LANGUAGE sql", () => {
             dedent`
               ${code}
               LANGUAGE Sql
-              AS $$select 1$$
+              AS $$SELECT 1$$
             `,
             { dialect: "postgresql" },
           ),

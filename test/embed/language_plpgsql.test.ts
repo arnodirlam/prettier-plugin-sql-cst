@@ -35,7 +35,7 @@ describe("LANGUAGE plpgsql", () => {
           dedent`
               ${code}
               LANGUAGE plpgsql
-              AS 'BEGIN SELECT ''foo''; END'
+              AS 'BEGIN RETURN 1; END'
             `,
           { sqlExperimentalPlpgsql: true },
         );

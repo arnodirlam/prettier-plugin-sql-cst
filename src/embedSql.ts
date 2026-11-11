@@ -142,5 +142,5 @@ const isRoutine = (
   isCreateFunctionStmt(node) || isCreateProcedureStmt(node);
 
 const detectQuote = (node: StringLiteral): string | undefined => {
-  return node.text.match(/^(\$[^$]*\$)/)?.[1];
+  return node.text.match(/^\$[^$]*\$/)?.[0];
 };

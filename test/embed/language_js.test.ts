@@ -6,7 +6,12 @@ describe("LANGUAGE js", () => {
     "preserves JavaScript in unsupported quote style: %s",
     async (body) => {
       await testBigquery(
-        `CREATE FUNCTION f()\nRETURNS INT64\nLANGUAGE js\nAS ${body}`,
+        dedent`
+          CREATE FUNCTION f()
+          RETURNS INT64
+          LANGUAGE js
+          AS ${body}
+        `,
       );
     },
   );

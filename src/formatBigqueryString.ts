@@ -10,17 +10,22 @@ export const formatBigqueryString = (
   return async (
     textToDoc: (text: string, options: Options) => Promise<Doc>,
   ) => {
-    const match = node.text.match(/^([rR])('''|""")/);
-    if (!match) {
+    const quotes = detectQuotes(node.text);
+    if (!quotes) {
       return undefined;
     }
 
     const code = await textToDoc(node.value, options);
     return [
-      match[0],
+      quotes[0],
       indent([hardline, stripTrailingHardline(code)]),
       hardline,
-      match[2],
+      quotes[1],
     ];
   };
+};
+
+const detectQuotes = (text: string): [string, string] | undefined => {
+  const match = text.match(/^[rR]('''|""")/);
+  return match ? [match[0], match[1]] : undefined;
 };

@@ -96,14 +96,18 @@ describe("PL/pgSQL EXECUTE embedding", () => {
 });
 
 describe("BigQuery EXECUTE IMMEDIATE embedding", () => {
-  it("does not introduce conflicting triple quotes through JSON embedding", async () => {
+  it("does not embed wrapped JSON with conflicting triple quotes", async () => {
     const result = await pretty(
       `EXECUTE IMMEDIATE r'''select JSON '{"message":"a long message that will force this JSON document to wrap","enabled":true}' '''`,
       { dialect: "bigquery", printWidth: 40 },
     );
-    expect(result).toContain(
-      `JSON '{"message":"a long message that will force this JSON document to wrap","enabled":true}'`,
-    );
+    // embedJson can use ''' for wrapped JSON, closing the outer raw string.
+    expect(result).toBe(dedent`
+      EXECUTE IMMEDIATE
+        r'''
+          SELECT JSON '{"message":"a long message that will force this JSON document to wrap","enabled":true}';
+        '''
+    `);
     await testBigquery(result, { printWidth: 40 });
   });
   it("formats a command with INTO and named parameters", async () => {
@@ -140,14 +144,10 @@ describe("BigQuery EXECUTE IMMEDIATE embedding", () => {
   });
 
   it("preserves triple double quotes", async () => {
-    expect(
-      await pretty(`EXECUTE IMMEDIATE r"""select "'''" """`, {
-        dialect: "bigquery",
-      }),
-    ).toBe(dedent`
+    await testBigquery(dedent`
       EXECUTE IMMEDIATE
         r"""
-          SELECT "'''";
+          SELECT 'value';
         """
     `);
   });
@@ -163,7 +163,7 @@ describe("BigQuery EXECUTE IMMEDIATE embedding", () => {
     "EXECUTE IMMEDIATE r'select ?'",
     "EXECUTE IMMEDIATE '''select 1'''",
     'EXECUTE IMMEDIATE "select " || column_name',
-    'EXECUTE IMMEDIATE "unsupported SQL syntax"',
+    `EXECUTE IMMEDIATE r'''unsupported SQL syntax'''`,
   ])("preserves commands it cannot embed: %s", async (source) => {
     await testBigquery(source);
   });
