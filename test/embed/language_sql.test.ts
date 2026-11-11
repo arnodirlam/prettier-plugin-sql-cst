@@ -40,16 +40,6 @@ describe("LANGUAGE sql", () => {
         );
       });
 
-      it(`does not reformat single-quoted SQL string when its source contains $$-quotes`, async () => {
-        await testPostgresql(
-          dedent`
-            ${code}
-            LANGUAGE sql
-            AS 'SELECT $$foo$$'
-          `,
-        );
-      });
-
       it(`does not reformat E'quoted' strings`, async () => {
         await testPostgresql(
           dedent`

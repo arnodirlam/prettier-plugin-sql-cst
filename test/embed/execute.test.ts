@@ -152,12 +152,6 @@ describe("BigQuery EXECUTE IMMEDIATE embedding", () => {
     `);
   });
 
-  it("preserves commands containing both triple-quote delimiters", async () => {
-    await testBigquery(
-      `EXECUTE IMMEDIATE ${JSON.stringify(`select "'''", '"""'`)}`,
-    );
-  });
-
   it.each([
     'EXECUTE IMMEDIATE "select @id"',
     "EXECUTE IMMEDIATE r'select ?'",

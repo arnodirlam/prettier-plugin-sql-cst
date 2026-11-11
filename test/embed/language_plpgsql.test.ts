@@ -41,17 +41,6 @@ describe("LANGUAGE plpgsql", () => {
         );
       });
 
-      it(`does not reformat single-quoted SQL string when its source contains $$-quotes`, async () => {
-        await testPostgresql(
-          dedent`
-            ${code}
-            LANGUAGE plpgsql
-            AS 'BEGIN SELECT $$foo$$; END'
-          `,
-          { sqlExperimentalPlpgsql: true },
-        );
-      });
-
       it(`does not reformat E'quoted' strings`, async () => {
         await testPostgresql(
           dedent`

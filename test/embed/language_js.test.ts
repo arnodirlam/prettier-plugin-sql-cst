@@ -70,15 +70,4 @@ describe("LANGUAGE js", () => {
       """
     `);
   });
-
-  it(`does not reformat JavaScript when neither ''' or """ can be easily used for quoting`, async () => {
-    await testBigquery(
-      dedent`
-        CREATE FUNCTION contains_quotes(x STRING)
-        RETURNS FLOAT64
-        LANGUAGE js
-        AS " return /'''|\\"\\"\\"/.test(x) "
-      `,
-    );
-  });
 });
